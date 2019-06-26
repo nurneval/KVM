@@ -6,19 +6,17 @@ import sys
 
 
 
-def compress( fileNameToBeCompressed,compressedFileName, compressionMode  ):
-    print 'creating archive:' + compressedFileName
-    out = tarfile.open(compressedFileName, mode='w:gz')
+def compress(fullFilePathToBeCompressed,fullFilePathOfCompressedFile, compressionMode  ):
+    print 'creating archive:' + fullFilePathOfCompressedFile
+
+
+    out = tarfile.open(fullFilePathOfCompressedFile, mode=compressionMode)
     try:
-	    print 'adding ' + fileNameToBeCompressed
-	    out.add(sys.argv[1])
+	    print 'adding ' + fullFilePathToBeCompressed
+	    out.add(fullFilePathToBeCompressed)
     finally:
-        print 'closing ' + compressedFileName
+        print 'closing ' + fullFilePathOfCompressedFile
         out.close()
 
-	print
-	print 'Contents added to '  + compressedFileName +' :'
-	t = tarfile.open(compressedFileName, 'r')
-	for member_info in t.getmembers():
-	    print member_info.name
+
     return;
