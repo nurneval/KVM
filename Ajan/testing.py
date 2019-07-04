@@ -16,7 +16,7 @@ class State:
 
   def __init__(self,fullFilePath):
     self.currentTime = datetime.datetime.now()
-    self.fileSize = os.path.getsize(fullFilePath)
+    self.fileSize = os.path.getsize(fullFilePath) /1024 /1024  ##MB
     self.memoryUsageInfo = memoryUsage.using()
 
 
@@ -38,22 +38,22 @@ def prepareParameters(compressionModeName):
 
 def printStatistics(state1=State ,  state2=State):
   timeDelta= state2.currentTime - state1.currentTime
-  compressionRatio= state1.fileSize  / float(state2.fileSize)
+  compressionRatio= state2.fileSize  / float(state1.fileSize)
 
 
-  print 'Statistics:'
-  print 'memoryUsageInfo before: ' + state1.memoryUsageInfo
-  print 'total time in miliseconds: ' + str(timeDelta.total_seconds()*1000)
-  print 'uncompressedFileSize: ' + str(state1.fileSize)
-  print 'compressedFileSize: ' + str(state2.fileSize)
-  print 'compressionRatio: ' + str(compressionRatio)
-  print 'memoryUsageInfo after: ' + state2.memoryUsageInfo
-
+  print ("Statistics:")
+  print ("memoryUsageInfo before: " + state1.memoryUsageInfo)
+  print ("memoryUsageInfo after:  "+ state2.memoryUsageInfo)
+  print ("total time in seconds: " + str(timeDelta.total_seconds()))
+  print ("total time in seconds: %.2f" % timeDelta.total_seconds() )
+  print ("uncompressedFileSize in MB:  %.2f" % state1.fileSize)
+  print ("compressedFileSize in MB:  %.2f" % state2.fileSize)
+  print ("compressionRatio:  %.2f" % compressionRatio)
 
 
 def compressWithDetails(compressionModeName,compressionMode):
-    print '<<<#####################################################'
-    print 'Compressing with ' + compressionModeName
+    print ("<<<#####################################################")
+    print ("Compressing with " + compressionModeName)
 
 
     prepareParameters(compressionModeName)
@@ -65,15 +65,16 @@ def compressWithDetails(compressionModeName,compressionMode):
     stateAfter = State(fullFilePathOfCompressedFile)
 
     printStatistics(stateBefore, stateAfter)
-    print '#####################################################>>>'
+    print ("#####################################################>>>")
     return;
 
 
 
-print
-print
-print
+print()
+print()
+print()
 compressWithDetails('gzip', 'w:gz')
 compressWithDetails('bzip2', 'w:bz2')
+compressWithDetails('lzma', 'w:xz')
 
 #deleteTarFilesFromWorkingPath(workingPath)

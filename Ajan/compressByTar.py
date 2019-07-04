@@ -7,15 +7,15 @@ import sys
 
 
 def compress(fullFilePathToBeCompressed,fullFilePathOfCompressedFile, compressionMode  ):
-    print 'creating archive:' + fullFilePathOfCompressedFile
+    print ("creating archive:" + fullFilePathOfCompressedFile)
 
 
     out = tarfile.open(fullFilePathOfCompressedFile, mode=compressionMode)
     try:
-	    print 'adding ' + fullFilePathToBeCompressed
+	    print ("adding " + fullFilePathToBeCompressed)
 	    out.add(fullFilePathToBeCompressed)
     finally:
-        print 'closing ' + fullFilePathOfCompressedFile
+        print ("closing" + fullFilePathOfCompressedFile)
         out.close()
 
 
