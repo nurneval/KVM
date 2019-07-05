@@ -2,20 +2,21 @@
 import tarfile
 
 import sys
+import os
 
 
 
 
-def compress(fullFilePathToBeCompressed,fullFilePathOfCompressedFile, compressionMode  ):
-    print ("creating archive:" + fullFilePathOfCompressedFile)
+def compress(workingPath,fileNameToBeCompressed, compressedFileName, compressionMode ):
+    print ("creating archive: " + workingPath + compressedFileName )
 
-
-    out = tarfile.open(fullFilePathOfCompressedFile, mode=compressionMode)
+    os.chdir(workingPath)
+    out = tarfile.open(compressedFileName, mode=compressionMode)
     try:
-	    print ("adding " + fullFilePathToBeCompressed)
-	    out.add(fullFilePathToBeCompressed)
+	    print ("adding " + fileNameToBeCompressed)
+	    out.add(fileNameToBeCompressed)
     finally:
-        print ("closing" + fullFilePathOfCompressedFile)
+        print ("closing" + compressedFileName)
         out.close()
 
 

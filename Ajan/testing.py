@@ -5,18 +5,21 @@ import os
 
 
 import compressByTar
+import decompressByTar
 import memoryUsage
 
-fullFilePathToBeCompressed= ''
+
 compressedFileName= ''
 fullFilePathOfCompressedFile= ''
 
+workingPath= sys.argv[1]
+fileNameToBeCompressed= sys.argv[2]
 
 class State:
 
-  def __init__(self,fullFilePath):
+  def __init__(self, workingPath, fileNameToBeCompressed):
     self.currentTime = datetime.datetime.now()
-    self.fileSize = os.path.getsize(fullFilePath) /1024 /1024  ##MB
+    self.fileSize = os.path.getsize(workingPath+fileNameToBeCompressed)
     self.memoryUsageInfo = memoryUsage.using()
 
 
@@ -26,55 +29,61 @@ def prepareParameters(compressionModeName):
     global compressedFileName
     global fullFilePathOfCompressedFile
 
-    workingPath= sys.argv[1]
-    fileNameToBeCompressed= sys.argv[2]
-
     fullFilePathToBeCompressed= workingPath +   fileNameToBeCompressed
-    compressedFileName= compressionModeName + '.tar'
+    compressedFileName= fileNameToBeCompressed + '_' + compressionModeName + '.tar'
     fullFilePathOfCompressedFile= workingPath   + compressedFileName
 
 
 
 
-def printStatistics(state1=State ,  state2=State):
-  timeDelta= state2.currentTime - state1.currentTime
+def printStatistics(state1=State ,  state2=State, state3= State):
+  totalTimeForCompression= state2.currentTime - state1.currentTime
+  totalTimeForDecompression= state3.currentTime - state2.currentTime
   compressionRatio= state2.fileSize  / float(state1.fileSize)
 
-
+  print()
   print ("Statistics:")
-  print ("memoryUsageInfo before: " + state1.memoryUsageInfo)
-  print ("memoryUsageInfo after:  "+ state2.memoryUsageInfo)
-  print ("total time in seconds: " + str(timeDelta.total_seconds()))
-  print ("total time in seconds: %.2f" % timeDelta.total_seconds() )
-  print ("uncompressedFileSize in MB:  %.2f" % state1.fileSize)
-  print ("compressedFileSize in MB:  %.2f" % state2.fileSize)
-  print ("compressionRatio:  %.2f" % compressionRatio)
+  print ("memoryUsageInfo before compression: " + state1.memoryUsageInfo)
+  print ("memoryUsageInfo after compression:  "+ state2.memoryUsageInfo)
+  print ("memoryUsageInfo after decompression:  "+ state3.memoryUsageInfo)
+  print()
+  print ("total time to compress in seconds: %.5f" % totalTimeForCompression.total_seconds() )
+  print ("total time to decompress in seconds: %.5f" % totalTimeForDecompression.total_seconds() )
+  print()
+  print ("uncompressedFileSize in MB:  %.5f" % (state1.fileSize /1024/1024) )
+  print ("compressedFileSize in MB:  %.5f" % (state2.fileSize/1024/1024))
+  print ("compressionRatio(uncomp/comp):  %.2f" % compressionRatio)
 
 
-def compressWithDetails(compressionModeName,compressionMode):
+def testWithDetails(compressionModeName,compressionMode):
     print ("<<<#####################################################")
     print ("Compressing with " + compressionModeName)
 
-
     prepareParameters(compressionModeName)
 
-    stateBefore = State(fullFilePathToBeCompressed)
+    stateBeforeCompression = State(workingPath, fileNameToBeCompressed)
 
-    compressByTar.compress(fullFilePathToBeCompressed,fullFilePathOfCompressedFile, compressionMode)
 
-    stateAfter = State(fullFilePathOfCompressedFile)
+    compressByTar.compress(workingPath, fileNameToBeCompressed ,compressedFileName, compressionMode)
 
-    printStatistics(stateBefore, stateAfter)
+    stateAfterCompression = State(workingPath, compressedFileName)
+
+    decompressByTar.decompress(workingPath, compressedFileName)
+
+    stateAfterDecompression = State(workingPath, compressedFileName)
+
+    printStatistics(stateBeforeCompression, stateAfterCompression,stateAfterDecompression)
     print ("#####################################################>>>")
     return;
 
 
 
-print()
-print()
-print()
-compressWithDetails('gzip', 'w:gz')
-compressWithDetails('bzip2', 'w:bz2')
-compressWithDetails('lzma', 'w:xz')
 
-#deleteTarFilesFromWorkingPath(workingPath)
+
+print()
+print()
+print()
+testWithDetails('gzip', 'w:gz')
+testWithDetails('bzip2', 'w:bz2')
+testWithDetails('lzma', 'w:xz')
+ 
