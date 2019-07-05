@@ -87,6 +87,4 @@ testWithDetails('gzip', 'w:gz')
 testWithDetails('bzip2', 'w:bz2')
 testWithDetails('lzma', 'w:xz')
 
-#deleteTarFilesFromWorkingPath(workingPath)
-
- 
+#deleteTarFilesFromWorkingPath(deneme from local)
