@@ -18,7 +18,9 @@ fileNameToBeCompressed= sys.argv[2]
 class State:
 
   def __init__(self, workingPath, fileNameToBeCompressed):
+
     self.currentTime = datetime.datetime.now()
+    print (datetime.datetime.now()) 
     self.fileSize = os.path.getsize(workingPath+fileNameToBeCompressed)
     self.memoryUsageInfo = memoryUsage.using()
 
@@ -43,9 +45,9 @@ def printStatistics(state1=State ,  state2=State, state3= State):
 
   print()
   print ("Statistics:")
-  print ("memoryUsageInfo before compression: " + state1.memoryUsageInfo)
-  print ("memoryUsageInfo after compression:  "+ state2.memoryUsageInfo)
-  print ("memoryUsageInfo after decompression:  "+ state3.memoryUsageInfo)
+  print ("memoryUsageInfo before compression:  " + state1.memoryUsageInfo)
+  print ("memoryUsageInfo after compression:   "+ state2.memoryUsageInfo)
+  print ("memoryUsageInfo after decompression: "+ state3.memoryUsageInfo)
   print()
   print ("total time to compress in seconds: %.5f" % totalTimeForCompression.total_seconds() )
   print ("total time to decompress in seconds: %.5f" % totalTimeForDecompression.total_seconds() )
@@ -86,5 +88,3 @@ print()
 testWithDetails('gzip', 'w:gz')
 testWithDetails('bzip2', 'w:bz2')
 testWithDetails('lzma', 'w:xz')
-
-#deleteTarFilesFromWorkingPath(deneme5 from local)

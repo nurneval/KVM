@@ -10,10 +10,11 @@ fullFilePathToBeDecompressed = sys.argv[2]
 
 def decompress(workingPath, compressedFileName ):
 
-      print ("Decompressing :" + workingPath + compressedFileName )
+      print ("Decompressing :" + workingPath + compressedFileName + " to " + decompressionPath )
       os.chdir(workingPath)
+      decompressionPath = workingPath+ "/decomplar"
       tf = tarfile.open(compressedFileName)
-      tf.extractall()
+      tf.extractall(decompressionPath)
       print ("Decompressing finished successfully" )
 
 
