@@ -136,7 +136,7 @@ def pbzip2():
 
 
     print ("Decompressing :" + workingPath + compressedFileName  )
-    subprocess.call(['pbzip2','-df',  compressedFileName ])
+    subprocess.call(['pbzip2','-dfk',  compressedFileName ])
     print ("Decompressing finished successfully" )
 
     stateAfterDecompression = State(workingPath, fileNameToBeCompressed)
