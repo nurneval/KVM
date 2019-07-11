@@ -1,0 +1,374 @@
+{% extends "index.html" %}
+{% block content %}
+
+						
+							<div class="row">
+									<div class="col-xs-12">
+																			
+										<div class="pull-right">				
+											<select class="chosen-select"  data-placeholder="Select the Task type" id="task-select"  onchange="javascript:oBtTaskTypeSelect();">
+												<option value="">Select the Task type</option>
+												{% for ds in taskList %}
+													<option value="{{ds.id}}">{{ds.name}}</option>
+												{% endfor %}															
+											</select>
+										</div>
+										
+										<h3 class="header smaller lighter blue">
+											<i class="icon-rss icon-animated-hand-pointer blue"></i>
+											Task run log list
+										</h3>
+										
+											
+																										
+										<div class="table-header">
+											Current 300 task logs
+										</div>
+										<div class="table-responsive">
+											<table id="sample-table-2" class="table table-striped table-bordered table-hover">
+												<thead>
+													<tr>
+														<th class="col-sm-3">
+															<label>
+																<input type="checkbox" class="ace" />
+																<span class="lbl"></span>
+															</label>
+															Mission ID
+														</th>
+														<th>Task name</th>
+														<th>Task parameters</th>
+														<th class="hidden-480">Task time</th>
+
+														<th>
+															<i class="icon-time bigger-110 hidden-480"></i>
+															Spend time(sec)
+														</th>
+
+														<th class="hidden-480">TaskStatus</th>
+
+														<th class="center">operating</th>
+													</tr>
+												</thead>
+
+												<tbody>
+												{% for ds in taskLog %}
+													<tr>
+														<td >
+															<label>
+																<input type="checkbox" class="ace" />
+																<span class="lbl"></span>
+																<a href="#">
+																	{{ ds.task_id }}
+																</a>
+															</label>														
+															
+														</td>
+
+														<td>
+															{{ ds.name }}
+														</td>
+														<td class="col-xs-1">
+															{{ ds.args }}
+																														
+														</td>
+														<td class="hidden-480">
+															{{ ds.tstamp|date:"Y/m/d H:i:s" }}	
+																												
+														</td>
+														<td>
+															{{ ds.runtime }}
+															
+														</td>
+														<td class="hidden-480">
+															{% if ds.state == 'SUCCESS' %}
+																<span class="label label-success arrowed">
+																	Success
+																</span>
+															{% elif ds.state == 'FAILURE' %}
+																<span class="label label-danger arrowed">
+																	failure
+																</span>	
+															{% elif ds.state == 'STARTED' %}
+																<span class="label label-info arrowed">
+																	Start
+																</span>	
+															{% elif ds.state == 'REVOKED' %}
+																<span class="label label-inverse arrowed">
+																	cancel
+																</span>	
+															{% elif ds.state == 'RECEIVED' %}
+																<span class="label label-purple arrowed">
+																	receive
+																</span>	
+															{% elif ds.state == 'PENDING' %}
+																<span class="label label-warning arrowed">
+																	wait
+																</span>	
+															{% elif ds.state == 'RETRY' %}
+																<span class="label label-yellow  arrowed">
+																	Retry
+																</span>	
+															{% else %}
+																<span class="label label-pink arrowed-in">
+																	unknown
+																</span>												
+															{% endif %}															
+															
+														</td>
+
+														<td class="center">
+															<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+																<a class="black" data-toggle="modal" data-target="#myViewLogModal" href="javascript:" onclick="onBtnViewTaskLog(this,{{ ds.id }},'{{ds.task_id}}','view')">
+																	<i class="icon-zoom-in  bigger-120"></i>
+																</a>																	 																																																		
+																<a class="red" href="javascript:" onclick="onBtnHandleTaskLog(this,{{ ds.id }},'{{ds.task_id}}','delete')">
+																	<i class="icon-trash  bigger-120"></i>
+																</a>
+																
+																																																				
+															</div>																			
+														</td>
+
+													</tr>
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>	
+
+						</div>
+						
+			
+			
+			<!-- Modal Box -->
+			<div class="modal fade" id="myViewLogModal" tabindex="-1" role="dialog" aria-labelledby="myViewLogModalLabel" aria-hidden="true">
+				<div class="modal-dialog" style="width:800px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+								&times;
+							</button>
+							<h4 class="modal-title" id="myViewLogModalLabel">
+								Task details
+							</h4>
+						</div>
+						<div class="modal-body">
+							<div id="viewLog" class="row">
+							
+														
+							
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">close
+							</button>							
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal -->
+			</div>
+			
+		
+		<!-- page specific plugin scripts -->
+
+		<script src="/static/js/jquery.dataTables.min.js"></script>
+		<script src="/static/js/jquery.dataTables.bootstrap.js"></script>
+		<script type="text/javascript">
+		jQuery(function($) {
+			var oTable1 = $('#sample-table-2').dataTable( {
+			"aoColumns": [
+		      { "bSortable": false },
+		      null, null,null, null, null,
+			  { "bSortable": false }
+			] } );
+			
+			
+			$('table th input:checkbox').on('click' , function(){
+				var that = this;
+				$(this).closest('table').find('tr > td:first-child input:checkbox')
+				.each(function(){
+					this.checked = that.checked;
+					$(this).closest('tr').toggleClass('selected');
+				});
+					
+			});
+			
+			
+				
+			$(".chosen-select").chosen(); 
+			$('#chosen-multiple-style').on('click', function(e){
+					var target = $(e.target).find('input[type=radio]');
+					var which = parseInt(target.val());
+					if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
+					 else $('#form-field-select-4').removeClass('tag-input-style');
+			});
+		
+			$('[data-rel="tooltip"]').tooltip({placement: tooltip_placement});
+			function tooltip_placement(context, source) {
+				var $source = $(source);
+				var $parent = $source.closest('table')
+				var off1 = $parent.offset();
+				var w1 = $parent.width();
+		
+				var off2 = $source.offset();
+				var w2 = $source.width();
+		
+				if( parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2) ) return 'right';
+				return 'left';
+			}
+		});
+
+		
+		function oBtTaskTypeSelect() {
+			   var obj = document.getElementById("task-select"); 
+			   var index = obj.selectedIndex;
+			   var value = obj.options[index].value;
+			   if ( value.length >0 ) {
+				   window.location.href='/viewTask/?taskid='+ value;
+			   }
+			   
+		}
+		
+		function onBtnViewTaskLog(obj, id,task_id,op){
+			var btnObj = $(obj);
+			btnObj.attr('disabled',true);
+			$.ajax({
+				dataType: "JSON",
+				url:'/viewTask/', //Request address
+				type:"POST",  //Submit similar
+				data:{
+					"id":id,
+					"op":op,
+					"task_id":task_id
+				},
+				success:function(response){
+					btnObj.removeAttr('disabled');
+					if (response["code"] == 200){
+						var viewHmtl = '<div class="col-xs-12 col-sm-9">' +
+											'<h4 class="blue">' +
+											'<span class="middle">mission name</span>' +					
+											'<span class="label label-purple arrowed-in-right">' +
+												'<i class="icon-circle smaller-80 align-middle"></i>' +
+												response['data']['name'] +
+											'</span>' +
+										'</h4>' +
+					
+										'<div class="profile-user-info">' +
+											'<div class="profile-info-row">' +
+												'<div class="profile-info-name"> Task Id </div>' +
+					
+												'<div class="profile-info-value">' +
+													'<span>'+ response['data']['task_id'] +'</span>' +
+												'</div>' +
+											'</div>' +
+					
+											'<div class="profile-info-row">' +
+												'<div class="profile-info-name"> TaskStatus </div>' +
+					
+												'<div class="profile-info-value">' +
+													'<i class="icon-map-marker light-orange bigger-110"></i>' +
+													'<span>'+ response['data']['state'] +'</span>' +													
+												'</div>' +
+											'</div>' +
+					
+											'<div class="profile-info-row">' +
+												'<div class="profile-info-name"> Task parameters </div>' +
+					
+												'<div class="profile-info-value">' +
+												'<span>'+ response['data']['args'] +'</span>' +
+												'</div>' +
+											'</div>' +
+					
+											'<div class="profile-info-row">' +
+												'<div class="profile-info-name"> Mission results </div>' +
+					
+												'<div class="profile-info-value">' +
+												'<span>'+ response['data']['result'] +'</span>' +
+												'</div>' +
+											'</div>' +
+					
+											'<div class="profile-info-row">' +
+												'<div class="profile-info-name"> CreationTime </div>' +
+					
+												'<div class="profile-info-value">' +
+												'<span>'+ response['data']['tstamp'] +'</span>' +
+												'</div>' +
+											'</div>' +
+											
+											'<div class="profile-info-row">' +
+												'<div class="profile-info-name"> Spend time </div>' +
+					
+												'<div class="profile-info-value">' +
+												'<span>'+ response['data']['runtime'] +'</span>' +
+												'</div>' +
+											'</div>' +
+										'</div>' +
+					
+										'<div class="hr hr-8 dotted"></div>' +
+					
+										'<div class="profile-user-info">' +
+											'<div class="profile-info-row">' +
+												'<div class="profile-info-name"> Other parameters </div>' +
+					
+												'<div class="profile-info-value">' +
+													'<a href="#" target="_blank">'+ response['data']['kwargs'] +'</a>' +
+												'</div>' +
+											'</div>' +
+					
+											'<div class="profile-info-row">' +
+												'<div class="profile-info-name"> Running node </div>' +
+					
+												'<div class="profile-info-value">' +
+													'<a href="#" target="_blank">'+ response['data']['worker'] +'</a>' +
+												'</div>' +
+											'</div>' +
+					
+										'</div>' +
+									'</div>' 
+						document.getElementById('viewLog').innerHTML = viewHmtl;
+						
+					}
+					else {
+						var viewHmtl = response['msg'];
+						document.getElementById('viewLog').innerHTML = viewHmtl;
+					}
+					
+				},
+		    	error:function(response){
+		    		btnObj.removeAttr('disabled');
+
+		    	}
+			})
+	}
+		
+		function onBtnHandleTaskLog(obj, id,task_id,op){
+			var btnObj = $(obj);
+			btnObj.attr('disabled',true);
+			$.ajax({
+				dataType: "JSON",
+				url:'/viewTask/', //Request address
+				type:"POST",  //Submit similar
+				data:{
+					"id":id,
+					"op":op,
+					"task_id":task_id
+				},
+				success:function(response){
+					btnObj.removeAttr('disabled');
+					if (response["code"] == 200){
+						window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.success);
+					}
+					else {
+						window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+					}
+					
+				},
+		    	error:function(response){
+		    		btnObj.removeAttr('disabled');
+		    		window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+		    	}
+			})
+	}
+		
+		</script>
+{% endblock %}

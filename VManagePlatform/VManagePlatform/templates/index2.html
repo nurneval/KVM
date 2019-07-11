@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Virtualization management platform</title>
+		<meta name="keywords" content="Virtualization, Management" />
+		<meta name="description" content="Virtualization, Management, KVM" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	    <script src="/static/js/jquery-1.11.1.min.js"></script>
+	    <script src="/static/js/jquery.form.js"></script>	
+	    <script src="/static/js/jquery.easy-pie-chart.min.js"></script>	
+		<!-- basic styles -->
+		<link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/static/css/font-awesome.min.css" />
+		<!--   csrf -->
+		<script src="/static/js/csrf.js"></script>
+		<!--    Popup style -->
+   		<script src="/static/js/xcConfirm.js" type="text/javascript" charset="utf-8"></script>
+   		<link rel="stylesheet" type="text/css" href="/static/css/xcConfirm.css"/>
+		<script src="/static/js/echarts.js"></script>
+		<!--[if IE 7]>
+		  <link rel="stylesheet" href="/static/css/font-awesome-ie7.min.css" />
+		<![endif]-->
+
+		<!-- page specific plugin styles -->
+
+		<!-- fonts -->
+		
+		<link rel="stylesheet" href="/static/css/bootstrap-select.min.css">
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="/static/js/bootstrap-select.min.js"></script>
+
+		
+		
+		<link rel="stylesheet" href="/static/css/jquery-ui-1.10.3.custom.min.css" />
+		<link rel="stylesheet" href="/static/css/chosen.css" />
+		<link rel="stylesheet" href="/static/css/datepicker.css" />
+		<link rel="stylesheet" href="/static/css/bootstrap-timepicker.css" />
+		<link rel="stylesheet" href="/static/css/daterangepicker.css" />
+		<link rel="stylesheet" href="/static/css/colorpicker.css" />
+		
+		<!-- ace styles -->
+
+		<link rel="stylesheet" href="/static/css/ace.min.css" />
+		<link rel="stylesheet" href="/static/css/ace-rtl.min.css" />
+		<link rel="stylesheet" href="/static/css/ace-skins.min.css" />
+		
+		<!-- timeline  -->
+		<link rel="stylesheet" href="/static/css/timeline.css" >
+		
+		<!--[if lte IE 8]>
+		  <link rel="stylesheet" href="/static/css/ace-ie.min.css" />
+		<![endif]-->
+
+		<!-- inline styles related to this page -->
+
+		<!-- ace settings handler -->
+		<script src="/static/js/ace-extra.min.js"></script>
+		
+<!-- 		<link rel="stylesheet" href="/static/css/bootstrap-select.min.css" /> -->
+<!-- 		<script src="/static/js/bootstrap-select.min.js"></script> -->
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+		<!--[if lt IE 9]>
+		<script src="/static/js/html5shiv.js"></script>
+		<script src="/static/js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<div class="navbar navbar-default" id="navbar">
+			<script type="text/javascript">
+				try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+			</script>
+
+			<div class="navbar-container" id="navbar-container">
+				<div class="navbar-header pull-left">
+					<a href="#" class="navbar-brand">
+						<small>
+							<i class="icon-leaf"></i>
+							Virtualization management platform
+						</small>
+					</a><!-- /.brand -->
+				</div><!-- /.navbar-header -->
+
+				<div class="navbar-header pull-right" role="navigation">
+					<ul class="nav ace-nav">
+						<li class="green" id="logMsgs">
+						</li>
+						<li class="light-blue">
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<img class="nav-user-photo" src="/static/avatars/user.jpg" alt="Jason's Photo" />
+								<span class="user-info">
+									<small>Welcome,</small>
+									{{ user.username }}
+								</span>
+
+								<i class="icon-caret-down"></i>
+							</a>
+
+							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+								<li>
+									<a href="/profile">
+										<i class="icon-cog"></i>
+										Settings
+									</a>
+								</li>
+
+								<li>
+									<a href="/profile">
+										<i class="icon-user"></i>
+										Personal information
+									</a>
+								</li>
+
+								<li class="divider"></li>
+
+								<li>
+									<a href="/logout">
+										<i class="icon-off"></i>
+										Drop out
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul><!-- /.ace-nav -->
+				</div><!-- /.navbar-header -->
+			</div><!-- /.container -->
+		</div>
+
+		<div class="main-container" id="main-container">
+			<script type="text/javascript">
+				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+			</script>
+
+			<div class="main-container-inner">
+				<a class="menu-toggler" id="menu-toggler" href="#">
+					<span class="menu-text"></span>
+				</a>
+
+				<div class="sidebar" id="sidebar">
+					<script type="text/javascript">
+						try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+					</script>
+
+					<div class="sidebar-shortcuts" id="sidebar-shortcuts">
+						<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+							<button class="btn btn-success">
+								<i class="icon-signal"></i>
+							</button>
+
+							<button class="btn btn-info">
+								<i class="icon-pencil"></i>
+							</button>
+
+							<button class="btn btn-warning">
+								<i class="icon-group"></i>
+							</button>
+
+							<button class="btn btn-danger">
+								<i class="icon-cogs"></i>
+							</button>
+						</div>
+
+						<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+							<span class="btn btn-success"></span>
+
+							<span class="btn btn-info"></span>
+
+							<span class="btn btn-warning"></span>
+
+							<span class="btn btn-danger"></span>
+						</div>
+					</div><!-- #sidebar-shortcuts -->
+
+					<ul class="nav nav-list">
+						<li class="active">
+							<a href="/">
+								<i class="icon-dashboard"></i>
+								<span class="menu-text"> Console </span>
+							</a>
+						</li>
+
+						<li>
+							<a href="#" class="dropdown-toggle">
+								<i class="icon-desktop"></i>
+								<span class="menu-text"> VM Manager </span>
+
+								<b class="arrow icon-angle-down"></b>
+							</a>
+
+							<ul class="submenu">						
+									<li>
+										<a href="/listServer">
+												<i class="icon-leaf"></i>
+												Host list
+										</a>
+									</li>
+								
+							
+								
+									<li>
+										<a href="/addServer">
+											<i class="icon-leaf"></i>
+												Add host
+										</a>
+									</li>
+															
+
+																											
+							</ul>
+								
+							
+						</li>
+
+						<li>
+							<a href="/tempInstance" class="dropdown-toggle">
+								<i class="icon-resize-small"></i>
+								<span class="menu-text"> Instance template </span>
+							</a>
+						</li>
+
+						<li>
+							<a href="/configDhcp" class="dropdown-toggle">
+								<i class="icon-globe"></i>
+								<span class="menu-text"> DHCP Agent </span>
+
+								
+							</a>
+						</li>
+						
+						<li>
+							<a href="#" class="dropdown-toggle">
+								<i class="icon-cogs"></i>
+								<span class="menu-text"> Task scheduling </span>
+								<b class="arrow icon-angle-down"></b>
+							</a>
+
+							<ul class="submenu">						
+									<li>
+										<a href="/configTask">
+												<i class="icon-leaf"></i>
+												Configuration Center
+										</a>
+									</li>						
+									<li>
+										<a href="/viewTask">
+											<i class="icon-leaf"></i>
+												Run log
+										</a>
+									</li>																		
+							</ul>
+						</li>
+						
+						<li>
+							<a href="#" class="dropdown-toggle">
+								<i class="icon-group"></i>
+								<span class="menu-text"> Account management </span>
+								<b class="arrow icon-angle-down"></b>
+							</a>
+
+							<ul class="submenu">						
+									<li>
+										<a href="/user/">
+												<i class="icon-leaf"></i>
+												User
+										</a>
+									</li>						
+									<li>
+										<a href="/group/">
+											<i class="icon-leaf"></i>
+												UserGroup
+										</a>
+									</li>																		
+							</ul>
+						</li>
+
+						<li>
+							<a href="#" class="dropdown-toggle">
+								<i class="icon-user"></i>
+								<span class="menu-text"> UserCenter </span>
+
+								<b class="arrow icon-angle-down"></b>
+							</a>
+
+							<ul class="submenu">
+								<li>
+									<a href="/profile">
+										<i class="icon-double-angle-right"></i>
+										UserCenter
+									</a>
+								</li>
+								
+								<li>
+									<a href="/logout">
+										<i class="icon-double-angle-right"></i>
+										Drop out
+									</a>
+								</li>
+							</ul>
+						</li>
+
+
+
+
+					</ul><!-- /.nav-list -->
+
+					<div class="sidebar-collapse" id="sidebar-collapse">
+						<i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
+					</div>
+
+					<script type="text/javascript">
+						try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+					</script>
+				</div>
+
+				<div class="main-content">
+					<div class="breadcrumbs" id="breadcrumbs">
+						<script type="text/javascript">
+							try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+						</script>
+
+						<ul class="breadcrumb">
+							{% for ds in localtion %}
+								{% if forloop.counter == 1 %}
+								<li>
+									<i class="icon-home home-icon"></i>
+									<a href="{{ ds.url }}">{{ ds.name }}</a>
+								</li>	
+								{% else  %}
+								<li>
+									
+									<a href="{{ ds.url }}">{{ ds.name }}</a>
+								</li>									
+								{% endif %}						   
+							{% endfor %}
+
+						</ul><!-- .breadcrumb -->
+
+						<div class="nav-search" id="nav-search">
+							<form class="form-search">
+								<span class="input-icon">
+									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<i class="icon-search nav-search-icon"></i>
+								</span>
+							</form>
+						</div><!-- #nav-search -->
+					</div>
+
+					<div class="page-content">
+{% block content %}
+						<div class="row">
+							<div class="col-xs-12">
+							
+								<!-- PAGE CONTENT BEGINS -->
+
+								<div class="alert alert-block alert-success">
+									<button type="button" class="close" data-dismiss="alert">
+										<i class="icon-remove"></i>
+									</button>
+
+									<i class="icon-ok green"></i>
+
+									Welcome
+									<strong class="green">
+										Virtualized background management system
+										<small>(v1.1)</small>
+									</strong>
+									,Lightweight fast and easy to use.	
+								</div>
+
+								<div class="row">
+								
+									<div class="col-lg-2">
+							            <div class="panel panel-info">
+							              <div class="panel-heading">
+							                <div class="row">
+							                  <div class="col-xs-6">
+							                    <i class=" icon-dashboard bigger-230"></i>
+							                  </div>
+							                  <div class="col-xs-6 text-right">
+							                    <p class="announcement-heading" id="cpu_per"><strong>{{ totalInfo.serTotal }}</strong></p>
+							                    <p class="announcement-text">Total</p>
+							                  </div>
+							                </div>
+							              </div>
+							              <a href="#">
+							                <div class="panel-footer announcement-bottom">
+							                  <div class="row">
+							                    <div class="col-xs-6">
+							                      	<strong>Host machine</strong>
+							                    </div>
+							                    <div class="col-xs-6 text-right">
+							                      <i class="icon-arrow-right"></i>
+							                    </div>
+							                  </div>
+							                </div>
+							              </a>
+							            </div>
+							          </div>
+							          
+							          
+							          <div class="col-lg-2">
+							            <div class="panel panel-success">
+							              <div class="panel-heading">
+							                <div class="row">
+							                  <div class="col-xs-6">
+							                    <i class="icon-ok bigger-230"></i>
+							                  </div>
+							                  <div class="col-xs-6 text-right">
+							                    <p class="announcement-heading" id="cpu_per"><strong>{{ totalInfo.serRun }}</strong></p>
+							                    <p class="announcement-text">Connect</p>
+							                  </div>
+							                </div>
+							              </div>
+							              <a href="#">
+							                <div class="panel-footer announcement-bottom">
+							                  <div class="row">
+							                    <div class="col-xs-6">
+							                      	<strong>Host machine</strong>
+							                    </div>
+							                    <div class="col-xs-6 text-right">
+							                      <i class="icon-arrow-right"></i>
+							                    </div>
+							                  </div>
+							                </div>
+							              </a>
+							            </div>
+							          </div>
+							          
+							          <div class="col-lg-2">
+							            <div class="panel panel-danger">
+							              <div class="panel-heading">
+							                <div class="row">
+							                  <div class="col-xs-6">
+							                    <i class="icon-remove bigger-230"></i>
+							                  </div>
+							                  <div class="col-xs-6 text-right">
+							                    <p class="announcement-heading" id="cpu_per"><strong>{{ totalInfo.serStop }}</strong></p>
+							                    <p class="announcement-text">Disconnect</p>
+							                  </div>
+							                </div>
+							              </div>
+							              <a href="#">
+							                <div class="panel-footer announcement-bottom">
+							                  <div class="row">
+							                    <div class="col-xs-6">
+							                      	<strong>Host machine</strong>
+							                    </div>
+							                    <div class="col-xs-6 text-right">
+							                      <i class="icon-arrow-right"></i>
+							                    </div>
+							                  </div>
+							                </div>
+							              </a>
+							            </div>
+							          </div>
+							          
+							          
+							          <div class="col-lg-2">
+							            <div class="panel panel-info">
+							              <div class="panel-heading">
+							                <div class="row">
+							                  <div class="col-xs-6">
+							                    <i class="icon-globe bigger-230"></i>
+							                  </div>
+							                  <div class="col-xs-6 text-right">
+							                    <p class="announcement-heading" id="cpu_per"><strong>{{ totalInfo.vmTotal }}</strong></p>
+							                    <p class="announcement-text">VM Total</p>
+							                    <!-- <p class="announcement-text">Total</p> -->
+							                  </div>
+							                </div>
+							              </div>
+							              <a href="#">
+							                <div class="panel-footer announcement-bottom">
+							                  <div class="row">
+							                    <div class="col-xs-6">
+							                      	<strong>Virtual host</strong>
+							                    </div>
+							                    <div class="col-xs-6 text-right">
+							                      <i class="icon-arrow-right"></i>
+							                    </div>
+							                  </div>
+							                </div>
+							              </a>
+							            </div>
+							          </div>
+							          <div class="col-lg-2">
+							            <div class="panel panel-success">
+							              <div class="panel-heading">
+							                <div class="row">
+							                  <div class="col-xs-6">
+							                    <i class="icon-play-circle bigger-230"></i>
+							                  </div>
+							                  <div class="col-xs-6 text-right">
+							                    <p class="announcement-heading" id="cpu_per"><strong>{{ totalInfo.vmRun }}</strong></p>
+							                    <p class="announcement-text">VM Running</p>
+							                    <!-- <p class="announcement-text">Running</p> -->
+							                  </div>
+							                </div>
+							              </div>
+							              <a href="#">
+							                <div class="panel-footer announcement-bottom">
+							                  <div class="row">
+							                    <div class="col-xs-6">
+							                      	<strong>Virtual host</strong>
+							                    </div>
+							                    <div class="col-xs-6 text-right">
+							                      <i class="icon-arrow-right"></i>
+							                    </div>
+							                  </div>
+							                </div>
+							              </a>
+							            </div>
+							          </div>
+									  <div class="col-lg-2">
+							            <div class="panel panel-danger">
+							              <div class="panel-heading">
+							                <div class="row">
+							                  <div class="col-xs-6">
+							                    <i class="icon-stop bigger-230"></i>
+							                  </div>
+							                  <div class="col-xs-6 text-right">
+							                    <p class="announcement-heading" id="cpu_per"><strong>{{ totalInfo.vmStop }}</strong></p>
+							                    <p class="announcement-text">VM Stop</p>
+							                    <!-- <p class="announcement-text">Stop</p> -->
+							                  </div>
+							                </div>
+							              </div>
+							              <a href="#">
+							                <div class="panel-footer announcement-bottom">
+							                  <div class="row">
+							                    <div class="col-xs-6">
+							                      	<strong>Virtual host</strong>
+							                    </div>
+							                    <div class="col-xs-6 text-right">
+							                      <i class="icon-arrow-right"></i>
+							                    </div>
+							                  </div>
+							                </div>
+							              </a>
+							            </div>
+							          </div>
+								
+								</div>
+								
+								<div class="row">	
+									<div class="col-xs-12 col-sm-12 widget-container-span">
+										<div class="widget-box">
+											<div class="widget-header widget-header-large">
+												<h4>Introduction</h4>
+
+												<div class="widget-toolbar">
+													<a href="#" data-action="settings">
+														<i class="icon-cog"></i>
+													</a>
+
+													<a href="#" data-action="reload">
+														<i class="icon-refresh"></i>
+													</a>
+
+													<a href="#" data-action="collapse">
+														<i class="icon-chevron-up"></i>
+													</a>
+
+													<a href="#" data-action="close">
+														<i class="icon-remove"></i>
+													</a>
+												</div>
+											</div>
+
+											<div class="widget-body">
+												<div class="widget-main">
+													
+														<h1>Virtual Machine Management Platform<br>
+															<small>This's a Web UI for show virtual machine.</small>
+														</h1>
+														<p>There are five major items in total: virtual machine management, network management, storage pool, virtual machine asset management, and user management.</p>
+														<p>
+															<b>Host: resource utilization, instance control.</b>															
+														</p>
+														<p>
+															<b>Virtual machine management: functions include virtual machine migration, life cycle management, online memory, CPU resource, hot add, delete hard disks, traffic limit, snapshot technology, Web Console and so on.</b>															
+														</p>
+														<p>
+															<b>Storage management: increase or decrease volume, support mainstream type storage type </b>
+														</p>
+														<p>
+															<b>Network Management: Supports SDN, the underlying network uses OpenVSwitch/Linux Bridge, supports subnet isolation, IP address allocation, network card traffic limiting, and more.</b>
+														</p>
+														<p>
+															<b>User Management: Support user rights, user groups, user virtual machine resource allocation, and more.</b>
+														</p>
+<!-- ///////////////////////////////////////////////////////// -->	
+							
+<div class="TEST">
+<!-- 
+oncelikle yapilanlar kisa kisa
+urls.py icerisinde bu sayfanin gorune bilmesi icin link eklendi.
+templates/index2.html dosyasi index.html den alindi baglanti zaten kurulu. baglantiyi saglayan vComs.py icerisindeki index2 fonksiyonu. buraya gonderilenleri {{ icerisnde }} cagirip yazabiliriz.
+ 
+	<strong>{{ totalInfo.SERV }}</strong></br></br>
+	<strong>{{ inStanceList2 }}</strong></br></br>
+	<strong>{{ inStanceList3 }}</strong></br></br>
+-->
+
+
+
+<!-- LISTINSTANCE -->
+
+<div class="row">
+	<div class="col-xs-12">
+		<a href="/addInstance/{{vmServer.id}}/">
+			<botton class="btn btn-primary  pull-right">
+				<i class="icon-arrow-right icon-plus"></i>
+				Add a new virtual host
+			</botton>											
+		</a>								
+		
+		<h3 class="header smaller lighter blue">
+			<i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+			List of virtual machine instances
+		</h3>
+		<div class="table-header">
+			Current owned virtual machine instance
+		</div>
+
+		<div class="table-responsive">
+			<table id="sample-table-2" class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th class="center">
+							<label>
+								<input type="checkbox" class="ace" />
+								<span class="lbl"></span>
+							</label>
+						</th>
+						<th>Virtual host</th>
+						<th>InstanceName</th>
+						<th class="hidden-480">CPU</th>
+
+						<th>
+							<i class="icon-time bigger-110"></i>
+							RAM(MB)
+						</th>
+
+						<th class="hidden-480">Status</th>
+
+						<th class="center col-sm-3">Operating</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for ds in inStanceList3 %}
+					<tr>
+						<td class="center">
+							<label>
+								<input type="checkbox" class="ace" />
+								<span class="lbl"></span>
+							</label>
+						</td>
+
+						<td>
+							<a href="/viewServer/{{ds.server_id}}/">{{ ds.server_ip }}</a>
+						</td>
+						<td>
+							<a href="/viewInstance/{{ds.server_id}}/{{ ds.name }}/">
+								{{ ds.name }}
+							</a>
+						</td>
+						<td class="hidden-480">{{ ds.cpu }}</td>
+						<td class="hidden-480">{{ ds.mem }}</td>
+						<td class="hidden-480">
+							{% if ds.status == 1 %}
+							<i class="icon-play green"></i>
+							{% elif ds.status == 3 %}
+							<i class="icon-pause orange"></i>
+							{% elif ds.status == 5 %}
+							<i class="icon-stop red"></i>						                   		 
+							{% endif %}																
+							
+						</td>
+
+						<td class="center col-sm-3">
+							<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+								
+								{% if ds.vnc != '-1'  %}
+								<a class="blue" href="/vnc/{{ ds.server_id }}/{{ ds.vnc }}/{{ ds.token }}/" target="_black">
+									<i class="icon-desktop bigger-120"></i>																	
+								</a>
+								{% else %}
+								<a class="blue" href="#" target="_black">
+									<i class="icon-desktop bigger-120"></i>																	
+								</a>
+								{% endif %}
+								
+								<a class="blue" href="javascript:" onclick="onBtnHandleIns(this,{{ ds.server_id }},'{{ ds.name }}','start')">
+									<i class="icon-play bigger-120 green"></i>																
+								</a>
+								
+								<a class="blue" href="javascript:" onclick="onBtnHandleIns(this,{{ ds.server_id }},'{{ ds.name }}','suspend')">
+									<i class="icon-pause bigger-120 orange"></i>																
+								</a>																		
+								
+								<a class="blue" href="javascript:" onclick="onBtnHandleIns(this,{{ ds.server_id }},'{{ ds.name }}','resume')">
+									<i class="icon-play-circle bigger-120 "></i>																	
+								</a>
+								
+								<a class="blue" href="javascript:" onclick="onBtnHandleIns(this,{{ ds.server_id }},'{{ ds.name }}','reboot')">
+									<i class="icon-repeat bigger-120"></i>																	
+								</a>																																	
+								
+								<a class="blue" href="javascript:" onclick="onBtnHandleIns(this,{{ ds.server_id }},'{{ ds.name }}','shutdown')">
+									<i class="icon-stop bigger-120 red"></i>															
+								</a>	
+								
+								<a class="red" href="javascript:" onclick="onBtnHandleIns(this,{{ ds.server_id}},'{{ ds.name }}','halt')">
+									<i class="icon-off bigger-120"></i>
+								</a>
+								
+								<a class="black" href="javascript:" onclick="snapshotInstance(this,{{ ds.server_id }},'{{ ds.name }}','add')">
+									<i class="icon-camera bigger-120"></i>
+								</a>															
+								<a class="red" href="javascript:" onclick="onBtnHandleIns(this,{{ ds.server_id }},'{{ ds.name }}','delete')">
+									<i class="icon-trash  bigger-120"></i>
+								</a>
+								<a class="black" href="/viewInstance/{{ds.server_id}}/{{ ds.name }}/">
+									<i class="icon-zoom-in  bigger-120"></i>
+								</a>
+								<a class="black"  data-toggle="modal" data-target="#myModal">
+									<i class="icon-external-link  bigger-120"></i>
+								</a>
+								
+							</div>
+							
+							
+							
+						</td>
+
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>							
+</div>
+
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					Virtual Machine Allocation
+				</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" role="form" id="assignUser">	
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>Virtual Machine Selection</strong></label>							
+						<div class="col-sm-9">
+							<select  name="name"  data-placeholder="虚拟机">	
+								<option value="">Select virtual machine</option>
+								{% for ds in inStanceList %}			
+								<option value="{{ds.name}}">{{ds.name}}</option>
+								{% endfor %}
+							</select>	
+							
+						</div>
+					</div>																
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"><strong> User</strong> </label>					
+						<div class="col-sm-9">
+							<select name="username">																
+								{% for ds in userList %}
+								<option value="{{ds.username}}">{{ds.username}}</option>
+								{% endfor %}								
+							</select>																	
+						</div>
+					</div>
+				</form>												
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">close
+				</button>
+				<button type="button" class="btn btn-primary" onclick="assignVm(this,{{vmServer.id}},'assign')">
+					confirm
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
+
+
+
+
+
+
+<script type="text/javascript">
+	if("ontouchend" in document) document.write("<script src='/static/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+</script>
+<!-- page specific plugin scripts -->
+
+<script src="/static/js/jquery.dataTables.min.js"></script>
+<script src="/static/js/jquery.dataTables.bootstrap.js"></script>
+
+<!-- ace scripts -->
+
+<!-- inline scripts related to this page -->
+
+<script type="text/javascript">
+	jQuery(function($) {
+		var oTable1 = $('#sample-table-2').dataTable( {
+			"aoColumns": [
+			{ "bSortable": false },
+			null, null,null, null, null,
+			{ "bSortable": false }
+			] } );		
+		
+		
+		$('table th input:checkbox').on('click' , function(){
+			var that = this;
+			$(this).closest('table').find('tr > td:first-child input:checkbox')
+			.each(function(){
+				this.checked = that.checked;
+				$(this).closest('tr').toggleClass('selected');
+			});
+			
+		});
+		
+		$( "#input-size-slider-4" ).css('width','200px').slider({
+			value:1,
+			range: "min",
+			min: 1,
+			max: 8,
+			step: 1,
+			slide: function( event, ui ) {
+				var sizing = ['128', '512', '1024', '2048', '2048', '4096', '8192', '16384', '32768'];
+				var val = parseInt(ui.value);
+				$('#form-field-4').attr('class', sizing[val]).val(sizing[val]);
+			}
+		});
+		
+		$('[data-rel="tooltip"]').tooltip({placement: tooltip_placement});
+		function tooltip_placement(context, source) {
+			var $source = $(source);
+			var $parent = $source.closest('table');
+			var off1 = $parent.offset();
+			var w1 = $parent.width();
+			
+			var off2 = $source.offset();
+			var w2 = $source.width();
+			
+			if( parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2) ) return 'right';
+			return 'left';
+		}
+	});
+	
+
+	function snapshotInstance(obj,serverId,vmName,op){
+		var btnObj = $(obj);
+		btnObj.attr('disabled',true);
+		window.wxc.xcConfirm("please enter("+vmName+") Snapshot name:", window.wxc.xcConfirm.typeEnum.input,{
+			onOk:function(result){
+				if (result.length == 0){
+					/* Exit without input string */
+					return;
+				};
+				$.ajax({
+					type: 'POST',
+					url: '/handleSnapshot/',
+					data: {
+						"server_id":serverId,
+						"op":op,
+						'vm_name':vmName,
+						'snap_name':result
+					},
+					success:function(response){	
+						btnObj.removeAttr('disabled');
+						if (response["code"]=="200"){ 
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.success);
+
+						}
+						else{
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+						}						                
+					},
+					error:function(response){
+						btnObj.removeAttr('disabled');
+						window.wxc.xcConfirm("Request data error!", window.wxc.xcConfirm.typeEnum.error);
+					},							  
+				});
+				
+			}
+		});								   
+	}			
+	
+	function migrateInstance(obj,modalId,serverId,vmName) {
+		var btnObj = $(obj);
+		btnObj.attr('disabled',true);
+		var required = ['vm_tname','server_tid'];
+		var server_data = {};
+		var form = document.getElementById(modalId);
+		for (var i = 0; i < form.length; ++i) {
+			var name = form[i].name;
+			var value = form[i].value;	
+			idx = $.inArray(name, required);	
+			if (idx >= 0 && value.length == 0){
+				window.wxc.xcConfirm("Please note that required fields cannot be empty~", window.wxc.xcConfirm.typeEnum.error);
+				return false;
+			}
+			else if(  value.length != 0 && name.length != 0 ){
+				server_data[name] = value;
+			};				
+		};			
+		server_data['op'] = 'migrate';
+		server_data['server_id'] = serverId;
+		server_data['vm_name'] = vmName;
+		$.ajax({
+			dataType: "JSON",
+					url:'/handleInstance/', //Request address
+					type:"POST",  //Submit similar
+					data:server_data,  //Submit parameters
+					success:function(response){
+						btnObj.removeAttr('disabled');
+						if (response["code"] == 200){
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.success);
+						}
+						else {
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+						}
+						
+					},
+					error:function(response){
+						btnObj.removeAttr('disabled');
+						window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+					}
+				})	
+	}			
+	
+	function onBtnHandleIns(obj, server_id,vm_name,op){
+		var btnObj = $(obj);
+		btnObj.attr('disabled',true);
+		if ( op == 'start'){
+			var txt=  "Do you confirm to start?"
+		}
+		else if ( op == 'shutdown'){
+			var txt=  "Do you confirm to closed?"
+		}
+		else if( op == 'resume' ){
+			var txt=  "Do you confirm recovery?"
+		}
+		else if( op == 'suspend' ){
+			var txt=  "Do you confirm the suspension?"
+		}			
+		else if( op == 'halt' ){
+			var txt=  "Do you confirm to close?"
+		}	
+		else if( op == 'delete' ){
+			var txt=  "Do you confirm to delete?"
+		}
+		else if( op == 'reboot' ){
+			var txt=  "Do you confirm the restart?"
+		};				
+		var option = {
+			title: "Operation host("+vm_name+")",
+			btn: parseInt("0011",2),
+			onOk: function(){
+				$.ajax({
+					type: 'POST',
+					url: '/handleInstance/'+server_id+'/',
+					data:{
+						"server_id":server_id,
+						"op":op,
+						"vm_name":vm_name
+					},
+					success:function(response){	
+						btnObj.removeAttr('disabled');
+						if (response["code"]=="200"){ 
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.success);
+
+						}
+						else{
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+						}						                
+					},
+					error:function(response){
+						btnObj.removeAttr('disabled');
+						window.wxc.xcConfirm("Operation failed", window.wxc.xcConfirm.typeEnum.error);
+					},		
+				});
+			},
+			onCancel:function(){	
+			},
+			onClose:function(){
+			}
+		}			
+		window.wxc.xcConfirm(txt, "custom", option);
+	}			
+	
+	
+	function assignVm(obj,server_id,op) {
+		var required = ['name','username'];
+		var btnObj = $(obj);
+		btnObj.attr('disabled',true);
+		var server_data = {};
+		var form = document.getElementById('assignUser');
+		for (var i = 0; i < form.length; ++i) {
+			var name = form[i].name;
+			var value = form[i].value;
+			idx = $.inArray(name, required);
+			if (idx >= 0 && value.length == 0){
+				window.wxc.xcConfirm("Please note that required fields cannot be empty~", window.wxc.xcConfirm.typeEnum.error);
+				btnObj.removeAttr('disabled');
+				return false;
+			}
+			else if(  value.length != 0 && name.length != 0 ){
+				server_data[name] = value;
+			};			
+		};
+		server_data['op'] = op;
+		server_data['server'] = server_id; 
+		$.ajax({
+			dataType: "JSON",
+				url:'/profile/', //Request address
+				type:"POST",  //Submit similar
+				data:server_data,  //Submit parameters
+				success:function(response){
+					btnObj.removeAttr('disabled');
+					if (response["code"] == 200){
+						window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.success);
+					}
+					else {
+						window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+					}
+					
+				},
+				error:function(response){
+					window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+				}
+			})	
+	}
+	
+	
+</script>
+<!-- LISTINSTANCE BITIS -->
+
+</div>	
+<!-- ///////////////////////////TEST bitis////////////////////////////// -->												
+												</div>
+											</div>
+										</div>
+									</div>										
+									
+								</div>
+									
+
+								
+								<div class="row">																							
+									<div class="col-xs-12 col-sm-12 widget-container-span">
+										<div class="widget-box">
+											<div class="widget-header widget-header-large">
+												<h4>Operation log</h4>
+
+												<div class="widget-toolbar">
+													<a href="#" data-action="settings">
+														<i class="icon-cog"></i>
+													</a>
+
+													<a href="#" data-action="reload">
+														<i class="icon-refresh"></i>
+													</a>
+
+													<a href="#" data-action="collapse">
+														<i class="icon-chevron-up"></i>
+													</a>
+
+													<a href="#" data-action="close">
+														<i class="icon-remove"></i>
+													</a>
+												</div>
+											</div>
+
+											<div class="widget-body">
+												<div class="widget-main">
+												<ul class="timeline">
+					    							{% for ds in logList %}
+					    								
+					    								{% if forloop.counter|divisibleby:2 %}
+													        <li>
+													          <div class="timeline-badge"><i class="icon-check"></i></div>
+													          <div class="timeline-panel">
+													            <div class="timeline-heading">
+													              <h4 class="timeline-title"><i class="icon-calendar">&nbsp;</i>{{ ds.create_time|date:"Y/m/d H:i:s" }}</h4>
+													              <p><small class="text-muted"><i class="icon-time"></i> {{ ds.create_time }} </small></p>
+													            </div>
+													            <div class="timeline-body">
+													              <p>Content:<strong>{{ ds.content }}</strong></p>
+													              <p>Operation target:<a href="/viewInstance/{{ds.server_id}}/{{ds.vm_name}}/">{{ ds.vm_name }}</a></p>
+													              <p>Operator:{{ ds.user }}</p>
+													              {% if ds.status == 0 %}
+													              		<p>Result:<span class="label label-success arrowed">Success</span></p>
+													              		{% else %}
+													              		<p>Result:<span class="label label-danger arrowed-in">Failed</span></p>
+													              {% endif %}
+													            </div>
+													          </div>
+													        </li>				    		
+												    	{% else %}
+													        <li class="timeline-inverted">
+													          <div class="timeline-badge warning"><i class="icon-credit-card"></i></div>
+													          <div class="timeline-panel">
+													            <div class="timeline-heading">
+													              <h4 class="timeline-title"><i class="icon-calendar">&nbsp;</i>{{ ds.create_time|date:"Y/m/d H:i:s" }}</h4>
+													              <p><small class="text-muted"><i class="icon-time"></i> {{ ds.create_time }} </small></p>
+													            </div>
+													             <div class="timeline-body">
+													              <p>Content:<strong>{{ ds.content }}</strong></p>
+													              <p>Operation target:<a href="/viewInstance/{{ds.server_id}}/{{ds.vm_name}}/">{{ ds.vm_name }}</a></p>
+													              <p>Operator:{{ ds.user }}</p>													              
+													              {% if ds.status == 0 %}
+													              		<p>Result:<span class="label label-success arrowed">Success</span></p>
+													              		{% else %}
+													              		<p>Result:<span class="label label-danger arrowed-in">Failed</span></p>
+													              		<br>
+													              		<pre class="prettyprint linenums">{{ds.result}}</pre>
+													              {% endif %}
+													            </div>
+													          </div>
+													        </li>				    		
+												    	{% endif %}
+					    									
+					    							{% endfor %}
+					        					</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>	
+							<div class="hr hr32 hr-dotted"></div>
+
+{% endblock %}
+				</div>
+				<div class="ace-settings-container" id="ace-settings-container">
+					<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
+						<i class="icon-cog bigger-150"></i>
+					</div>
+
+					<div class="ace-settings-box" id="ace-settings-box">
+						<div>
+							<div class="pull-left">
+								<select id="skin-colorpicker" class="hide">
+									<option data-skin="default" value="#438EB9">#438EB9</option>
+									<option data-skin="skin-1" value="#222A2D">#222A2D</option>
+									<option data-skin="skin-2" value="#C6487E">#C6487E</option>
+									<option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
+								</select>
+							</div>
+							<span>&nbsp; Select skin</span>
+						</div>
+
+						<div>
+							<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-navbar" />
+							<label class="lbl" for="ace-settings-navbar"> Fixed navigation bar</label>
+						</div>
+
+						<div>
+							<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-sidebar" />
+							<label class="lbl" for="ace-settings-sidebar"> Fixed slider</label>
+						</div>
+
+						<div>
+							<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-breadcrumbs" />
+							<label class="lbl" for="ace-settings-breadcrumbs">Fixed bread crumbs</label>
+						</div>
+
+						<div>
+							<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-rtl" />
+							<label class="lbl" for="ace-settings-rtl">Switch to the left</label>
+						</div>
+
+						<div>
+							<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-add-container" />
+							<label class="lbl" for="ace-settings-add-container">
+								Switch narrow screen
+								<b></b>
+							</label>
+						</div>
+					</div>
+				</div><!-- /#ace-settings-container -->
+			</div><!-- /.main-container-inner -->
+
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="icon-double-angle-up icon-only bigger-110"></i>
+			</a>
+		</div><!-- /.main-container -->
+
+		<!-- basic scripts -->
+
+		<!--[if !IE]> -->
+
+		
+
+		<!-- <![endif]-->
+
+		<!--[if IE]>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<![endif]-->
+
+		<!--[if !IE]> -->
+
+		<script type="text/javascript">
+			window.jQuery || document.write("<script src='/static/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+		</script>
+
+		<script type="text/javascript"> 
+			function getLogsMsg () {
+					$.ajax({
+						url:'/api/log/{{user}}/', //Request address
+						type:"GET",  //Submit similar
+						success:function(response){
+							if (response.length > 0 ){						
+									var newStr = '<a data-toggle="dropdown" class="dropdown-toggle" href="#">' +
+												 '<i class="icon-bell-alt icon-animated-bell"></i>' +
+											     '<span class="badge badge-important">'+ response.length +'</span>' +
+											     '</a>' +
+												 '<ul class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">' +
+													'<li class="dropdown-header">' +
+														'<i class="icon-warning-sign"></i>' + response.length + 'Notice' +												
+													'</li>'
+									for (var i=0;i< response.length;i++)
+										{
+											if ( response[i]['status'] == 0 ){
+												status = '<span class="pull-right badge badge-success">Success</span></div></a></li>'
+											}
+											else{
+												status = '<span class="pull-right badge badge-danger">Failure</span></div></a></li>'
+											}
+											newStr += '<li><a href="javascript:" onclick="readLogsMsg(this,'+  response[i]['id'] + ')"><div class="clearfix">' +
+															'<span class="pull-left">' +
+															'<i class="btn btn-xs no-hover btn-pink icon-desktop"></i>' + response[i]['content'] +
+															'</span>' + status
+									};
+									newStr +=  '<li> ' +
+												 '<a href="/profile/#messages">See all messages' +
+												   '<i class="icon-arrow-right"></i>' +
+												 '</a>' +
+											   '</li>' +
+											  '</ul>'
+									$('#logMsgs').html(newStr);	
+								}
+						}
+					});	
+				};
+				getLogsMsg ();
+				function readLogsMsg(obj,id) {
+					$.ajax({
+						dataType: "JSON",
+						url:'/api/logs/'+ id +'/', //Request address
+						type:"PUT",  //Submit similar
+						data:{
+							'isRead':1,
+						}, //Submit parameters
+						success:function(response){
+							getLogsMsg ();
+						}
+					})					
+				}
+		
+		</script>
+
+		<script type="text/javascript">
+			if("ontouchend" in document) document.write("<script src='/static/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+		</script>
+		<script src="/static/js/bootstrap.min.js"></script>
+		<script src="/static/js/typeahead-bs2.min.js"></script>
+
+		<!-- page specific plugin scripts -->
+
+		<!-- ace scripts -->
+
+		<script src="/static/js/ace-elements.min.js"></script>
+		<script src="/static/js/ace.min.js"></script>
+
+		<!-- inline scripts related to this page -->
+		<script src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="/static/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="/static/js/chosen.jquery.min.js"></script>
+		<script src="/static/js/fuelux/fuelux.spinner.min.js"></script>
+		<script src="/static/js/date-time/bootstrap-datepicker.min.js"></script>
+		<script src="/static/js/date-time/bootstrap-timepicker.min.js"></script>
+		<script src="/static/js/date-time/moment.min.js"></script>
+		<script src="/static/js/date-time/daterangepicker.min.js"></script>
+		<script src="/static/js/bootstrap-colorpicker.min.js"></script>
+		<script src="/static/js/jquery.knob.min.js"></script>
+		<script src="/static/js/jquery.autosize.min.js"></script>
+		<script src="/static/js/jquery.inputlimiter.1.3.1.min.js"></script>
+		<script src="/static/js/jquery.maskedinput.min.js"></script>
+		<script src="/static/js/bootstrap-tag.min.js"></script>	
+
+	
+</body>
+</html>
