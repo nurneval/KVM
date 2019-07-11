@@ -2,40 +2,18 @@
 import sys
 import datetime
 import os
+import tarfile
+import subprocess
 
 
-import compressByTar
-import decompressByTar
-import memoryUsage
-
-
-compressedFileName= ''
-fullFilePathOfCompressedFile= ''
-
-workingPath= sys.argv[1]
-fileNameToBeCompressed= sys.argv[2]
 
 class State:
 
-  def __init__(self, workingPath, fileNameToBeCompressed):
+  def __init__(self, workingPath, fileName):
 
     self.currentTime = datetime.datetime.now()
-    print (datetime.datetime.now()) 
-    self.fileSize = os.path.getsize(workingPath+fileNameToBeCompressed)
-    self.memoryUsageInfo = memoryUsage.using()
-
-
-def prepareParameters(compressionModeName):
-
-    global fullFilePathToBeCompressed
-    global compressedFileName
-    global fullFilePathOfCompressedFile
-
-    fullFilePathToBeCompressed= workingPath +   fileNameToBeCompressed
-    compressedFileName= fileNameToBeCompressed + '_' + compressionModeName + '.tar'
-    fullFilePathOfCompressedFile= workingPath   + compressedFileName
-
-
+    print (datetime.datetime.now())
+    self.fileSize = os.path.getsize(workingPath+fileName)
 
 
 def printStatistics(state1=State ,  state2=State, state3= State):
@@ -45,9 +23,6 @@ def printStatistics(state1=State ,  state2=State, state3= State):
 
   print()
   print ("Statistics:")
-  print ("memoryUsageInfo before compression:  " + state1.memoryUsageInfo)
-  print ("memoryUsageInfo after compression:   "+ state2.memoryUsageInfo)
-  print ("memoryUsageInfo after decompression: "+ state3.memoryUsageInfo)
   print()
   print ("total time to compress in seconds: %.5f" % totalTimeForCompression.total_seconds() )
   print ("total time to decompress in seconds: %.5f" % totalTimeForDecompression.total_seconds() )
@@ -57,22 +32,114 @@ def printStatistics(state1=State ,  state2=State, state3= State):
   print ("compressionRatio(uncomp/comp):  %.2f" % compressionRatio)
 
 
-def testWithDetails(compressionModeName,compressionMode):
-    print ("<<<#####################################################")
-    print ("Compressing with " + compressionModeName)
+def gzip():
 
-    prepareParameters(compressionModeName)
+    print ("<<<#####################################################")
+    print ("Compressing with gzip ")
 
     stateBeforeCompression = State(workingPath, fileNameToBeCompressed)
 
+    print ("compressing :" + workingPath + fileNameToBeCompressed  )
+    compressedFileName= fileNameToBeCompressed + "_gzip"
+    out = tarfile.open(compressedFileName, mode='w:gz')
+    out.add(fileNameToBeCompressed)
+    out.close()
+    print ("compressing finished successfully" )
 
-    compressByTar.compress(workingPath, fileNameToBeCompressed ,compressedFileName, compressionMode)
 
     stateAfterCompression = State(workingPath, compressedFileName)
 
-    decompressByTar.decompress(workingPath, compressedFileName)
+    decompressionPath = workingPath+ "/decomplar"
+    print ("Decompressing :" + workingPath + compressedFileName   )
+    tf = tarfile.open(compressedFileName)
+    tf.extractall(decompressionPath)
+    print ("Decompressing finished successfully" )
 
     stateAfterDecompression = State(workingPath, compressedFileName)
+
+    printStatistics(stateBeforeCompression, stateAfterCompression,stateAfterDecompression)
+    print ("#####################################################>>>")
+    return;
+
+def bzip2():
+
+    print ("<<<#####################################################")
+    print ("Compressing with bzip2 ")
+
+    stateBeforeCompression = State(workingPath, fileNameToBeCompressed)
+
+    print ("compressing :" + workingPath + fileNameToBeCompressed  )
+    compressedFileName= fileNameToBeCompressed + "_bzip2"
+    out = tarfile.open(compressedFileName, mode='w:bz2')
+    out.add(fileNameToBeCompressed)
+    out.close()
+    print ("compressing finished successfully" )
+
+
+    stateAfterCompression = State(workingPath, compressedFileName)
+
+    decompressionPath = workingPath+ "/decomplar"
+    print ("Decompressing :" + workingPath + compressedFileName   )
+    tf = tarfile.open(compressedFileName)
+    tf.extractall(decompressionPath)
+    print ("Decompressing finished successfully" )
+
+    stateAfterDecompression = State(workingPath, compressedFileName)
+
+    printStatistics(stateBeforeCompression, stateAfterCompression,stateAfterDecompression)
+    print ("#####################################################>>>")
+    return;
+
+def lzma():
+
+    print ("<<<#####################################################")
+    print ("Compressing with bzip2 ")
+
+    stateBeforeCompression = State(workingPath, fileNameToBeCompressed)
+
+    print ("compressing :" + workingPath + fileNameToBeCompressed  )
+    compressedFileName= fileNameToBeCompressed + "_lzma"
+    out = tarfile.open(compressedFileName, mode='w:xz')
+    out.add(fileNameToBeCompressed)
+    out.close()
+    print ("compressing finished successfully" )
+
+
+    stateAfterCompression = State(workingPath, compressedFileName)
+
+    decompressionPath = workingPath+ "/decomplar"
+    print ("Decompressing :" + workingPath + compressedFileName   )
+    tf = tarfile.open(compressedFileName)
+    tf.extractall(decompressionPath)
+    print ("Decompressing finished successfully" )
+
+    stateAfterDecompression = State(workingPath, compressedFileName)
+
+    printStatistics(stateBeforeCompression, stateAfterCompression,stateAfterDecompression)
+    print ("#####################################################>>>")
+    return;
+
+
+def pbzip2():
+
+    print ("<<<#####################################################")
+    print ("Compressing with pbzip2 ")
+
+    stateBeforeCompression = State(workingPath, fileNameToBeCompressed)
+
+    print ("compressing :" + workingPath + fileNameToBeCompressed  )
+    subprocess.call(['pbzip2',"-kf" , fileNameToBeCompressed ])
+    compressedFileName=fileNameToBeCompressed + ".bz2"
+    print ("compressing finished successfully" )
+
+    stateAfterCompression = State(workingPath, compressedFileName)
+
+
+    print ("Decompressing :" + workingPath + compressedFileName  )
+    subprocess.call(['pbzip2','-df',  compressedFileName ])
+    print ("Decompressing finished successfully" )
+
+    stateAfterDecompression = State(workingPath, fileNameToBeCompressed)
 
     printStatistics(stateBeforeCompression, stateAfterCompression,stateAfterDecompression)
     print ("#####################################################>>>")
@@ -85,6 +152,18 @@ def testWithDetails(compressionModeName,compressionMode):
 print()
 print()
 print()
-testWithDetails('gzip', 'w:gz')
-testWithDetails('bzip2', 'w:bz2')
-testWithDetails('lzma', 'w:xz')
+
+
+workingPath= sys.argv[1]
+fileNameToBeCompressed= sys.argv[2]
+os.chdir(workingPath)
+
+
+gzip()
+bzip2()
+lzma()
+pbzip2()
+#testWithDetails('pbzip2', '')
+#testWithDetails('gzip', 'w:gz')
+#testWithDetails('bzip2', 'w:bz2')
+#testWithDetails('lzma', 'w:xz')
