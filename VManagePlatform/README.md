@@ -225,15 +225,10 @@ redirect_stderr=true
 stopsignal=QUIT
 numprocs=1
 
-启动celery
+celery
 # /usr/local/bin/supervisord -c /etc/supervisord.conf
 # supervisorctl status
 ```
-## Yardım
-
-VManagePlatform'un size yardımcı olabileceğini düşünüyorsanız, aşağıdaki şekillerde bağışta bulunabilirsiniz.！
-
-![image](https://github.com/welliamcao/OpsManage/blob/master/demo_imgs/donate.png)
 
 ## İşlev ekranının bir parçası :
     Kullanıcı Merkezi
@@ -250,7 +245,5 @@ VManagePlatform'un size yardımcı olabileceğini düşünüyorsanız, aşağıd
 ![](https://github.com/mafsin/VManagePlatform/raw/master/demo_images/server.png)</br>
     Sanal makine kaynakları</br>
 ![](https://github.com/mafsin/VManagePlatform/raw/master/demo_images/instance.png)</br>
-    Web Console</br>
-![](https://github.com/welliamcao/VManagePlatform/raw/master/demo_images/consle.png)</br>
     All instance list
 ![](https://github.com/mafsin/VManagePlatform/raw/master/demo_images/allinstances.png)</br>
