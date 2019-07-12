@@ -1,0 +1,691 @@
+﻿{% extends "vmServer/index_server.html" %}
+
+{% block content %}
+
+
+						<div class="row">
+
+							<div class="col-sm-3">
+								<div class="widget-box">
+									<div class="widget-header widget-header-flat">
+										<h4>Tips</h4>
+									</div>
+
+									<div class="widget-body">
+										<div class="widget-main">
+											<ul class="list-unstyled spaced2">
+												<li>
+													<i class="icon-circle green"></i>
+														Platform provides three ways to create virtual machines, customizations, templates, and XML configuration
+												</li>
+
+												<li class="muted">
+													<i class="icon-warning-sign orange"></i>
+													Please note the following points when creating a new virtual machine:
+
+												</li>
+
+												<li>
+													<ul class="list-unstyled">
+														<li>
+															<i class="icon-caret-right blue"></i>
+															Configuring storage pools: The platform uses storage management VM image resources
+														</li>
+
+															<li>
+																<i class="icon-caret-right blue"></i>
+															Configure the network: If you do not need a network, you can not configure the network
+														</li>
+
+													</ul>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+
+									<div class="col-sm-6 widget-container-span">
+										<div class="widget-box transparent">
+											<div class="widget-header">
+												<h4 class="lighter">
+													<i class="icon-cogs"></i>
+													Add a virtual machine
+												</h4>
+
+												<div class="widget-toolbar no-border">
+													<ul class="nav nav-tabs" id="myTab2">
+														<li class="active">
+															<a data-toggle="tab" href="#home2">customize</a>
+														</li>
+
+														<li>
+															<a data-toggle="tab" href="#profile2">template</a>
+														</li>
+
+														<li>
+															<a data-toggle="tab" href="#info2">XML</a>
+														</li>
+													</ul>
+												</div>
+											</div>
+
+											<div class="widget-body">
+												<div class="widget-main padding-12 no-padding-left no-padding-right">
+													<div class="tab-content padding-4">
+														<div id="home2" class="tab-pane in active">
+														<h4 class="header green">Custom configuration</h4>
+															<div class="slim-scroll" data-height="100">
+																<form class="form-horizontal" role="form" id="addInstance">
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-field-1">
+																	<i class="icon-user bigger-110 green"></i>
+																		 <strong>
+																		 	Virtual Manager
+																		 </strong>
+																	</label>
+
+																	<div class="col-sm-9">
+																		<input class="input-sm" type="text"   value="{{ vmServer.server_ip }}" disabled/>
+																	</div>
+																	<div class="col-sm-9" style="display: none;">
+																		<input class="input-sm" type="text" name="server_id"   value="{{ vmServer.id }}"/>
+																	</div>
+																</div>
+
+																<div class="space-4"></div>
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-field-3">
+																	<i class="icon-edit bigger-110 green"></i>
+																	<strong>Name</strong>
+																	</label>
+
+																	<div class="col-sm-9">
+																		<input class="input-sm" type="text" name="vm_name" placeholder="VMName" value=""/>
+																		<div class="space-2"></div>
+																	</div>
+																</div>
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-field-2">
+																	<i class="icon-ok bigger-110 green"></i>
+																	<strong>Storage pool</strong>
+																	</label>
+
+																	<div class="col-sm-9">
+																		<select id="vStorage-select" name="storage">
+																			<option value="">Storage Pool</option>
+																			{% for ds in vStorage %}
+																				<option value="{{ds.pool_name}}">{{ds.pool_name}}</option>
+																			{% endfor %}
+
+																		</select>
+																	</div>
+																</div>
+
+																<div class="space-4"></div>
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">
+																	<i class="icon-ok bigger-110 green"></i>
+																	<strong> Operating system</strong> </label>
+
+																	<div class="col-sm-9">
+																		<select id="system-select" name="system">
+																			<option value="">Operating system</option>
+																			{% for ds in vMImages %}
+																				<option value="{{ds.vol_path}}">{{ds.vol_name}}</option>
+																			{% endfor %}
+																		</select>
+																	</div>
+																</div>
+
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">
+																	<strong> Virtual Machine Allocation</strong> </label>
+																	<div class="col-sm-9">
+																		<select id="owner-select" name="owner">
+																			<option value="">SelectUser</option>
+																			{% for ds in userList %}
+																				<option value="{{ds.username}}">{{ds.username}}</option>
+																			{% endfor %}
+																		</select>
+																	</div>
+																</div>
+																<hr>
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-field-3"><strong>CPU</strong></label>
+
+																	<div class="col-sm-9">
+																		<input class="input-sm" type="text" id="form-field-3" placeholder="Number" name="cpu" />
+																		<div class="space-2"></div>
+																		<div class="help-block" id="input-size-slider-3"></div>
+																	</div>
+																</div>
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>RAM</strong></label>
+																	<div class="col-sm-9">
+																		<input class="input-sm" type="text" id="form-field-4" placeholder="Unit MB" name="mem" />
+																		<div class="space-2"></div>
+																		<div class="help-block" id="input-size-slider-4"></div>
+																	</div>
+																</div>
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>Hard disk</strong></label>
+
+																	<div class="col-sm-9">
+																		<input class="input-sm" type="text" id="form-field-5" placeholder="Unit GB" name="disk" />
+																		<div class="space-2"></div>
+																		<div class="help-block" id="input-size-slider-5"></div>
+																	</div>
+																</div>
+
+
+
+
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>Network Interface</strong></label>
+
+																	<div class="col-sm-9">
+																		<select multiple class="width-20 chosen-select" id="netk"  data-placeholder="Network selection">
+																			<option value=""></option>
+																			{% for ds in netkList %}
+																				<option value="{{ds.name}}">{{ds.name}}</option>
+																			{% endfor %}
+																		</select>
+
+																	</div>
+																</div>
+
+
+																<div class="hr hr32 hr-dotted"></div>
+																<div class="form-group">
+																	<div class="col-md-offset-3 col-md-9">
+																		<button class="btn btn-info" type="button" onclick="addVmInstance(this,'custom')">
+																			<i class="icon-ok bigger-110"></i>
+																			Submit
+																		</button>
+
+																		&nbsp; &nbsp; &nbsp;
+																		<button class="btn" type="reset">
+																			<i class="icon-undo bigger-110"></i>
+																			Undo
+																		</button>
+																	</div>
+																</div>
+															</form>
+															</div>
+														</div>
+
+														<div id="profile2" class="tab-pane">
+															<h4 class="header green">
+																<button class="btn btn-sm btn-success" data-toggle="modal" data-target="#tempModal">
+																	<i class="icon-plus"></i>
+																	Template creation
+																</button>
+															</h4>
+															<div class="slim-scroll" data-height="100">
+																<div class="table-responsive">
+
+
+															<table class="table table-striped table-bordered">
+															<thead>
+																<tr>
+																	<th class="center">No.</th>
+																	<th class="center">TemplateName</th>
+																	<th class="hidden-xs center">CPU</th>
+																	<th class="hidden-480 center">RAM(MB)</th>
+																	<th class="center">system disk(GB)</th>
+
+																</tr>
+															</thead>
+
+															<tbody>
+																{% for ds in tempList %}
+																<tr>
+																	<td class="center">{{ forloop.counter }}</td>
+																	<td class="center">
+																		<a>{{ ds.name }}</a>
+																	</td>
+																		<td class="hidden-xs center">
+																			{{ ds.cpu }}
+																	</td>
+																	<td class="center">
+																			{{ ds.mem }}
+																	</td>
+																	<td class="center">
+																		{{ ds.disk }}
+																	</td>
+
+																</tr>
+																{% endfor %}
+															</tbody>
+														</table>
+
+																</div>
+															</div>
+														</div>
+
+														<div id="info2" class="tab-pane">
+
+																	<h4 class="header green">XML Editor</h4>
+
+																				<textarea class="span12" id="instance_xml"  cols="114" rows="40">
+<domain type='kvm'>
+  <name>linux-001</name>
+  <memory unit='KiB'>1905664</memory>
+  <currentMemory unit='KiB'>524288</currentMemory>
+  <memtune>
+    <hard_limit unit='KiB'>1905664</hard_limit>
+    <soft_limit unit='KiB'>1905664</soft_limit>
+  </memtune>
+  <vcpu placement='static' current='2'>32</vcpu>
+  <os>
+    <type arch='x86_64' machine='rhel6.6.0'>hvm</type>
+    <boot dev='hd'/>
+    <boot dev='cdrom'/>
+	<bootmenu enable='yes' timeout='3000'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+  </features>
+  <clock offset='localtime'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <devices>
+    <emulator>/usr/libexec/qemu-kvm</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' cache='none'/>
+      <source file='/data/vmdisk/demo.img'/>
+      <target dev='vda' bus='virtio'/>
+      <alias name='virtio-disk0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/data/iso/CentOS-6.3-x86_64-bin-DVD1.iso'/>
+      <target dev='hda' bus='ide' tray='open'/>
+      <readonly/>
+      <alias name='ide0-0-0'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+    </disk>
+    <controller type='ide' index='0'>
+      <alias name='ide0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
+    </controller>
+    <controller type='usb' index='0'>
+      <alias name='usb0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
+    </controller>
+    <input type='mouse' bus='ps2'/>
+    <graphics type='vnc' port='5900' autoport='yes' listen='0.0.0.0' keymap='tr'>
+      <listen type='address' address='0.0.0.0'/>
+    </graphics>
+    <video>
+      <model type='cirrus' vram='9216' heads='1'/>
+      <alias name='video0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+    </video>
+    <memballoon model='virtio'>
+      <alias name='balloon0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+    </memballoon>
+  </devices>
+</domain>
+
+																				</textarea>
+
+
+																			<div class="widget-toolbox padding-4 clearfix">
+																				<div class="btn-group pull-left">
+																					<button class="btn btn-sm btn-info">
+																						<i class="icon-remove bigger-125"></i>
+																						Undo
+																					</button>
+																				</div>
+
+																				<div class="btn-group pull-right">
+																					<button class="btn btn-sm btn-purple" onclick="addXmlInstace(this,{{ vmServer.id }},'xml')">
+																						<i class="icon-save bigger-125"></i>
+																						Add to
+																					</button>
+																				</div>
+																			</div>
+
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+
+
+				<!-- Modal Box -->
+				<div class="modal fade" id="tempModal" tabindex="-1" role="dialog" aria-labelledby="tempModalLabel" aria-hidden="true">
+					<div class="modal-dialog" style="width:800px;">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+									&times;
+								</button>
+								<h4 class="modal-title" id="tempModalLabel">
+									{{ vmServer.hostname }}Add host
+								</h4>
+							</div>
+							<div class="modal-body">
+								<form class="form-horizontal" role="form" id="tempAddInstance">
+																<div class="form-group">
+																	<div class="col-sm-9" style="display: none;">
+																		<input class="input-sm" type="text" name="server_id"   value="{{ vmServer.id }}"/>
+																	</div>
+																</div>
+
+																<div class="space-4"></div>
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">
+																	<strong> Virtual machine template</strong> </label>
+
+																	<div class="col-sm-9">
+																		<select name="temp">
+																			<option value="">Template selection</option>
+																			{% for ds in tempList %}
+																				<option value="{{ds.id}}">{{ds.name}}</option>
+																			{% endfor %}
+																		</select>
+																	</div>
+																</div>
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-field-3">
+																	<strong>VMName</strong>
+																	</label>
+
+																	<div class="col-sm-9">
+																		<input class="input-sm" type="text" name="vm_name" placeholder="VMName" value=""/>
+																		<div class="space-2"></div>
+																	</div>
+																</div>
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-field-2">
+																	<strong>Storage pool</strong>
+																	</label>
+
+																	<div class="col-sm-9">
+																		<select id="vStorage-select" name="storage">
+																			<option value="">Select storage pool</option>
+																			{% for ds in vStorage %}
+																				<option value="{{ds.pool_name}}">{{ds.pool_name}}</option>
+																			{% endfor %}
+
+																		</select>
+																	</div>
+																</div>
+
+																<div class="space-4"></div>
+
+																<div class="form-group">
+																	<label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">
+																	<strong> Operating system</strong> </label>
+
+																	<div class="col-sm-9">
+																		<select id="system-select" name="system">
+																			<option value="">Operating system</option>
+																			{% for ds in vMImages %}
+																				<option value="{{ds.vol_path}}">{{ds.vol_name}}</option>
+																			{% endfor %}
+																		</select>
+																	</div>
+																</div>
+																<hr>
+
+
+															</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">close
+								</button>
+								<button type="button" class="btn btn-primary" onclick="addTempInstace(this,'template')">
+									Add to
+								</button>
+							</div>
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal -->
+				</div>
+
+
+
+			</div><!-- /.row -->
+
+
+
+		<script src="/static/js/markdown/bootstrap-markdown.min.js"></script>
+		<script type="text/javascript">
+
+
+			jQuery(function($) {
+
+				$(".chosen-select").chosen();
+				$('#chosen-multiple-style').on('click', function(e){
+					var target = $(e.target).find('input[type=radio]');
+					var which = parseInt(target.val());
+					if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
+					 else $('#form-field-select-4').removeClass('tag-input-style');
+				});
+
+
+				$( "#input-size-slider-3" ).css('width','200px').slider({
+					value:1,
+					range: "min",
+					min: 1,
+					max: 8,
+					step: 1,
+					slide: function( event, ui ) {
+						var sizing = ['1', '2', '4', '6', '8', '12', '16', '24', '32'];
+						var val = parseInt(ui.value);
+						$('#form-field-3').attr('class', sizing[val]).val(sizing[val]);
+					}
+				});
+
+				$( "#input-size-slider-4" ).css('width','200px').slider({
+					value:1,
+					range: "min",
+					min: 1,
+					max: 8,
+					step: 1,
+					slide: function( event, ui ) {
+						var sizing = ['128', '512', '1024', '2048', '2048', '4096', '8192', '16384', '32768'];
+						var val = parseInt(ui.value);
+						$('#form-field-4').attr('class', sizing[val]).val(sizing[val]);
+					}
+				});
+
+				$( "#input-size-slider-5" ).css('width','200px').slider({
+					value:1,
+					range: "min",
+					min: 1,
+					max: 8,
+					step: 1,
+					slide: function( event, ui ) {
+						var sizing = ['10', '20', '30', '40', '50', '60', '80', '100', '120'];
+						var val = parseInt(ui.value);
+						$('#form-field-5').attr('class', sizing[val]).val(sizing[val]);
+					}
+				});
+
+				$('table th input:checkbox').on('click' , function(){
+					var that = this;
+					$(this).closest('table').find('tr > td:first-child input:checkbox')
+					.each(function(){
+						this.checked = that.checked;
+						$(this).closest('tr').toggleClass('selected');
+					});
+
+				});
+
+
+
+				$( "#input-size-slider-6" ).css('width','200px').slider({
+					value:1,
+					range: "min",
+					min: 1,
+					max: 8,
+					step: 1,
+					slide: function( event, ui ) {
+						var sizing = ['1','2', '5', '10', '20', '30', '50', '100', '100'];
+						var val = parseInt(ui.value);
+						$('#form-field-6').attr('class', sizing[val]).val(sizing[val]);
+					}
+				});
+
+			});
+
+
+			function addTempInstace(obj,op) {
+				var btnObj = $(obj);
+				btnObj.attr('disabled',true);
+				var required = ['vm_name','server_id','temp','system',''];
+				var server_data = {};
+				var form = document.getElementById('tempAddInstance');
+				for (var i = 0; i < form.length; ++i) {
+					var name = form[i].name;
+					var value = form[i].value;
+					idx = $.inArray(name, required);
+					if (idx >= 0 && value.length == 0){
+						btnObj.removeAttr('disabled');
+						window.wxc.xcConfirm("Please note that required fields cannot be empty~", window.wxc.xcConfirm.typeEnum.error);
+						return false;
+					}
+					else if(  value.length != 0 && name.length != 0 ){
+						server_data[name] = value;
+					};
+				};
+				server_data['op'] = 'template';
+				$.ajax({
+					dataType: "JSON",
+					url:'/addInstance/', //Request address
+					type:"POST",  //Submit similar
+					data:server_data,  //Submit parameters
+					success:function(response){
+						btnObj.removeAttr('disabled');
+						if (response["code"] == 200){
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.success);
+						}
+						else {
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+						}
+
+					},
+			    	error:function(response){
+			    		btnObj.removeAttr('disabled');
+			    		window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+			    	}
+				})
+			}
+
+			function addXmlInstace(obj,server_id,op){
+				var btnObj = $(obj);
+				btnObj.attr('disabled',true);
+				$.ajax({
+					url:'/addInstance/', //Request address
+					type:"POST",  //Submit similar
+					data:{
+						"server_id":server_id,
+						"xml":$("#instance_xml").val(),
+						"op":op
+					},
+					success:function(response){
+						btnObj.removeAttr('disabled');
+						if (response["code"] == 200){
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.success);
+						}
+						else {
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+						}
+					},
+					error:function(response){
+						btnObj.removeAttr('disabled');
+			    		window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+			    	}
+				})
+		}
+
+
+
+			function addVmInstance(obj,op) {
+				var btnObj = $(obj);
+				btnObj.attr('disabled',true);
+				var server_data = {};
+				var required = ['vm_name','cpu',"system","disk","mem","storage"]; /* Required list */
+
+				var form = document.getElementById('addInstance');
+				for (var i = 1; i < form.length; ++i) {
+					var name = form[i].name;
+					var value = form[i].value;
+					idx = $.inArray(name, required);
+					if (idx >= 0 && value.length == 0){
+						window.wxc.xcConfirm("Please note that required fields cannot be empty~", window.wxc.xcConfirm.typeEnum.error);
+						btnObj.removeAttr('disabled');
+						return false;
+					};
+					if (  value.length != 0 && name.length != 0 ){
+						server_data[name] = value;
+					};
+				};
+
+				var netkValues = [];
+				 $("#netk :selected").each(function(){
+					 netkValues += $(this).val() +  ','
+				 });
+				if (netkValues.length > 0){
+					server_data.netk = netkValues.substring(0,netkValues.length-1);
+				};
+				server_data['op'] = op
+
+				$.ajax({
+					dataType: "JSON",
+					url:'/addInstance/{{ vmServer.id }}/', //Request address
+					type:"POST",  //Submit similar
+					data:server_data,  //Submit parameters
+					success:function(response){
+						btnObj.removeAttr('disabled');
+						if (response["code"] == 200){
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.success);
+							var time = 1;
+							setInterval(function() {
+							    if(time > 0) {
+							    	time--;
+							    } else {
+							    	port = response["data"][0]
+							    	token = response["data"][1]
+							    	window.open("/vnc/{{ vmServer.id }}/"+port+"/"+token)
+							    	location.href="/allInstance"
+							    }
+							},250)
+						}
+						else {
+							window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+						}
+
+					},
+			    	error:function(response){
+			    		btnObj.removeAttr('disabled');
+			    		window.wxc.xcConfirm(response["msg"], window.wxc.xcConfirm.typeEnum.error);
+			    	}
+				})
+
+			}
+
+		</script>
+
+{% endblock %}
