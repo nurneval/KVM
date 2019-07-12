@@ -129,6 +129,12 @@ def lzip():
     return;
 
 
+    print ("compressing :" + workingPath + fileNameToBeCompressed  )
+    compressedFileName= fileNameToBeCompressed + "_bzip2"
+    out = tarfile.open(compressedFileName, mode='w:bz2')
+    out.add(fileNameToBeCompressed)
+    out.close()
+    print ("compressing finished successfully" )
 
 def pigz():
     print("<<<#####################################################")
@@ -173,6 +179,61 @@ def pbzip2():
 
     printStatistics(stateBeforeCompression, stateAfterCompression, stateBeforeDecompression, stateAfterDecompression)
     print("#####################################################>>>")
+    return;
+
+def lzma():
+
+    print ("<<<#####################################################")
+    print ("Compressing with bzip2 ")
+
+    stateBeforeCompression = State(workingPath, fileNameToBeCompressed)
+
+    print ("compressing :" + workingPath + fileNameToBeCompressed  )
+    compressedFileName= fileNameToBeCompressed + "_lzma"
+    out = tarfile.open(compressedFileName, mode='w:xz')
+    out.add(fileNameToBeCompressed)
+    out.close()
+    print ("compressing finished successfully" )
+
+
+    stateAfterCompression = State(workingPath, compressedFileName)
+
+    decompressionPath = workingPath+ "/decomplar"
+    print ("Decompressing :" + workingPath + compressedFileName   )
+    tf = tarfile.open(compressedFileName)
+    tf.extractall(decompressionPath)
+    print ("Decompressing finished successfully" )
+
+    stateAfterDecompression = State(workingPath, compressedFileName)
+
+    printStatistics(stateBeforeCompression, stateAfterCompression,stateAfterDecompression)
+    print ("#####################################################>>>")
+    return;
+
+
+def pbzip2():
+
+    print ("<<<#####################################################")
+    print ("Compressing with pbzip2 ")
+
+    stateBeforeCompression = State(workingPath, fileNameToBeCompressed)
+
+    print ("compressing :" + workingPath + fileNameToBeCompressed  )
+    subprocess.call(['pbzip2',"-kf" , fileNameToBeCompressed ])
+    compressedFileName=fileNameToBeCompressed + ".bz2"
+    print ("compressing finished successfully" )
+
+    stateAfterCompression = State(workingPath, compressedFileName)
+
+
+    print ("Decompressing :" + workingPath + compressedFileName  )
+    subprocess.call(['pbzip2','-dfk',  compressedFileName ])
+    print ("Decompressing finished successfully" )
+
+    stateAfterDecompression = State(workingPath, fileNameToBeCompressed)
+
+    printStatistics(stateBeforeCompression, stateAfterCompression,stateAfterDecompression)
+    print ("#####################################################>>>")
     return;
 
 
