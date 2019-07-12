@@ -217,4 +217,4 @@ pigz() # multi-threaded version of gzip
 pbzip2()# multi-threaded version of bzip2
 lbzip2() #  multi-threaded version of bzip2
 #plzip() # multi-threaded version of lzip
-#lzop()
+##lzop()
